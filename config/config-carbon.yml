@@ -1,0 +1,144 @@
+# Define the plot script to make the images (e.g. plot_carbon.py)
+PLOT_ENGINE: plot_carbon
+
+# Desired Forecast Length (days)
+FC_LENGTH: 5
+
+# Directory path to gridded inputs (NetCDF)
+MERRA2_FILE_PATH: /discover/nobackup/projects/gmao/merra2/data/products/MERRA2_all/Y%y4/M%m2
+CARBON_NV_FILE_PATH: /discover/nobackup/projects/gmao/geos_carb/pub/inst3_3d_carb_Nv/Y%y4/M%m2
+CARBON_2D_FILE_PATH: /discover/nobackup/projects/gmao/geos_carb/pub/inst3_2d_xco2_Nx/Y%y4/M%m2
+#CARBON_3D_FILE_PATH: /discover/nobackup/projects/gmao/geos_carb/klmorga5/m2cc_ana/inst3_3d_carb_Np/Y%y4/M%m2
+CARBON_3D_FILE_PATH: /discover/nobackup/jardizzo/inst3_3d_carb_Np/Y%y4/M%m2
+
+# Directory path to output station sampled files (profiles).
+FC_PROF_PATH: /discover/nobackup/dao_ops/FLUID/datagrams/data/carbon/Y%y4/M%m2/D%d2/H%h2
+
+# Directory path to gridded forecast control files
+MERRA2_GRID_PATH: /home/dao_ops/cylc-run/datagrams-carbon/opendap
+CARBON_GRID_PATH: /home/dao_ops/cylc-run/datagrams-carbon/opendap
+
+# Root Directory path of station CSV data.
+STATION_PATH: /home/aconaty/data-services/gram/menus
+
+# Full pathname of output station sampled files (profiles).
+FC_PROF_PATHNAME: $FC_PROF_PATH/${collection}_$var.%iy4%im2%id2_%ih2z.nc
+
+# Directory path to datagram imagery
+GRAM_IMG_PATH: /discover/nobackup/dao_ops/FLUID/datagrams/images/carbon/Y%iy4/M%im2/D%id2/H%ih2
+
+# Directory on Portal machine where images and station CSV files are published.
+GRAM_PUBLISH_PATH: /dataportal01/devel/gmao_data_services/static/data-services
+
+# Gridded forecast collections to be sampled and interpolated to station
+# locations. Add or delete collections as needed. Each collection contains the
+# following information:
+#
+# src:       Directory path to gridded forecast files (NetCDF).
+# min_count: minimum file count criteria for a forecast (see FC_LENGTH).
+# vars:      list of desired variables to be interpolated to station locations.
+# levs:      level range to be sampled in the form lev1-lev2 (e.g. 950-300).
+# offset:    time offset in minutes (useful for tavg collections that do not
+#            start on the hour).
+# files:     list of one or more pathname expressions describing the gridded
+#            forecast files.
+
+collections: &COLLECTIONS
+
+  tavg1_2d_rad_Nx:
+    src: $MERRA2_FILE_PATH
+    vars: [CLDLOW,CLDMID,CLDHGH,CLDTOT]
+    file: $MERRA2_GRID_PATH/$collection
+    offset: 30
+
+    files:
+      - "MERRA2.tavg1_2d_rad_Nx.%y4%m2%d2.nc4"
+
+  tavg1_2d_flx_Nx:
+    src: $MERRA2_FILE_PATH
+    vars: [PRECTOT,PRECCON,PRECSNO]
+    file: $MERRA2_GRID_PATH/$collection
+    offset: 30
+
+    files:
+      - "MERRA2.tavg1_2d_flx_Nx.%y4%m2%d2.nc4"
+
+  tavg1_2d_slv_Nx:
+
+    src: $MERRA2_FILE_PATH
+    vars: [U10M,V10M,U2M,V2M,T2M,SLP]
+    file: $MERRA2_GRID_PATH/$collection
+    offset: 30
+
+    files:
+
+      - "MERRA2.tavg1_2d_slv_Nx.%y4%m2%d2.nc4"
+
+  inst3_3d_asm_Np:
+
+    src: $MERRA2_FILE_PATH
+    vars: [U,V,RH]
+    levs: 950-300
+    file: $MERRA2_GRID_PATH/$collection
+
+    files:
+
+      - "MERRA2.inst3_3d_asm_Np.%y4%m2%d2.nc4"
+
+  tavg1_2d_aer_Nx:
+
+    src: $MERRA2_FILE_PATH
+    vars: [SSEXTTAU,DUEXTTAU,BCEXTTAU,OCEXTTAU,SUEXTTAU,DUSMASS25,SSSMASS25,OCSMASS,BCSMASS,SO4SMASS]
+    file: $MERRA2_GRID_PATH/$collection
+    offset: 30
+
+    files:
+
+      - "MERRA2.tavg1_2d_aer_Nx.%y4%m2%d2.nc4"
+
+  tavg1_2d_chm_Nx:
+
+    src: $MERRA2_FILE_PATH
+    vars: [COSC]
+    file: $MERRA2_GRID_PATH/$collection
+    offset: 30
+
+    files:
+
+      - "MERRA2.tavg1_2d_chm_Nx.%y4%m2%d2.nc4"
+
+  inst3_3d_carb_Np:
+
+    src: $CARBON_3D_FILE_PATH
+    vars: [CO2, CO2EM, CO2SIM]
+    levs: 1000-500
+    file: $CARBON_GRID_PATH/$collection
+
+    files:
+
+      - "m2cc_ana.inst3_3d_carb_Np.%y4%m2%d2_%h200z.nc4"
+
+  inst3_2d_xco2_Nx:
+
+    src: $CARBON_2D_FILE_PATH
+    vars: [XCO2, XCO2SIM]
+    file: $CARBON_GRID_PATH/$collection
+
+    files:
+
+      - "m2cc_ana.inst3_2d_xco2_Nx.%y4%m2%d2_%h200z.nc4"
+
+  inst3_3d_carb_Nv:
+
+    src: $CARBON_NV_FILE_PATH
+    vars: [CO2, CO2SIM]
+    levs: 65-72
+    file: $CARBON_GRID_PATH/$collection
+
+    files:
+
+      - "m2cc_ana.inst3_3d_carb_Nv.%y4%m2%d2_%h200z.nc4"
+
+get_data:
+
+  <<: *COLLECTIONS

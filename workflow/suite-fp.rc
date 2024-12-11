@@ -1,0 +1,60 @@
+[cylc]
+    UTC mode = True
+[scheduling]
+    initial cycle point = 2022-09-14T12
+#   final cycle point = 2020-10-26T21
+    max active cycle points = 1
+    [[xtriggers]]
+        clock_1 = wall_clock(offset=PT6H)
+    [[dependencies]]
+        [[[T00,T12]]] # validity (hours)
+            graph = """
+                @clock_1 => gram_get_data => gram_run_sampler => gram_plot => gram_publish
+            """
+[runtime]
+    [[root]] # suite defaults
+
+        [[[environment]]]
+
+            datetime = $CYLC_TASK_CYCLE_POINT
+            config   = $CYLC_SUITE_DEF_PATH/config-fp.yml
+            
+        [[[events]]]
+            mail to = joseph.v.ardizzone@nasa.gov
+            mail events = failed
+
+    [[gram_get_data]]
+        script = "run get_data.py $datetime $config"
+        [[[job]]]
+            execution retry delays = 60*PT15M, 72*PT1H
+
+    [[gram_publish]]
+        script = "run gram_publish.csh $datetime $config"
+        [[[job]]]
+            execution retry delays = 60*PT15M, 72*PT1H
+
+    [[gram_run_sampler]]
+        script = "run gram_sampler.py $datetime $config"
+        [[[job]]]
+            batch system = slurm
+            execution time limit = PT1H
+        [[[directives]]]
+            --account = g0613
+            --partition = preops
+            --qos = dastest
+            --constraint = hasw
+            --ntasks = 28
+            --job-name = gram_run_sampler
+
+    [[gram_plot]]
+        script = "run gram_plot.py $datetime $config"
+        [[[job]]]
+            batch system = slurm
+            execution time limit = PT1H
+        [[[directives]]]
+            --account = g0613
+            --partition = preops
+            --qos = dastest
+            --constraint = hasw
+            --ntasks = 28
+            --job-name = gram_plot

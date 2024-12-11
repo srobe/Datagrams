@@ -1,0 +1,17 @@
+#!/bin/sh
+
+  cmd="$*"
+
+  export WKFL_INSTALL_DIR=/home/dao_ops/gmao_packages/Workflow/Shared
+
+# Set up environment
+# ==================
+
+  source /usr/share/modules/init/sh
+  module load python/GEOSpyD/Ana2019.10_py3.7
+  module load ImageMagick/7.0.9-16
+
+  export PYTHONPATH=${WKFL_INSTALL_DIR}
+  export PATH=${WKFL_INSTALL_DIR}:$PATH
+
+  $cmd

@@ -1,0 +1,26 @@
+#!/bin/csh
+
+  set sourced=($_)
+  if ("$sourced" != "") then
+      set dir = `dirname $sourced[2]`
+  else
+      set dir = `dirname $0`
+  endif
+
+  set cwd = `pwd`
+  cd $dir
+  set dir = `pwd`
+  cd $cwd
+
+  setenv WKFL_INSTALL_DIR /home/dao_ops/gmao_packages/Workflow/Shared
+  setenv GRAM_INSTALL_DIR $dir
+
+# Set up environment
+# ==================
+
+  source /usr/share/modules/init/csh
+  module load python/GEOSpyD/Ana2019.10_py3.7
+  module load ImageMagick/7.0.9-16
+
+  setenv PYTHONPATH ${WKFL_INSTALL_DIR}:$GRAM_INSTALL_DIR
+  setenv PATH ${GRAM_INSTALL_DIR}:$PATH
