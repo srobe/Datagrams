@@ -265,7 +265,7 @@ def plot(ipath, station, lat, lon, fcst, opath):
     for product in ['meteo', 'oc', 'bc', 'ss', 'du', 'su', 'total', 'co', 'co2', 'dumass', 'ssmass', 'ocmass', 'bcmass', 'sumass', 'nimass', 'totmass']:
         # start plot template
         fig = plt.figure()
-        ax = plt.gca()
+        # ax = plt.gca()
         ax1 = plt.subplot2grid((30, 1), (1, 0))
         ax2 = plt.subplot2grid((30, 1), (2, 0), sharex=ax1)
         ax3 = plt.subplot2grid((30, 1), (3, 0), sharex=ax1)
@@ -401,6 +401,8 @@ def plot(ipath, station, lat, lon, fcst, opath):
                 te.set_bbox(dict(color='w', alpha=0.8, pad=0.1))
         except:
             pass
+        ticks = ax4.get_yticks()          # returns current y-tick locations
+        ax4.set_yticks(ticks[:-1])        # example: keep every other tick
         ax4.set_yticklabels(ylabels[::2][:-1])
         ax4.yaxis.set_tick_params(direction='out')
         ax4.yaxis.tick_left()
@@ -507,12 +509,12 @@ def plot(ipath, station, lat, lon, fcst, opath):
             elif product in 'total' or product in 'all':
                 te = fig.text(-0.03, 0.6, 'Total Aerosol Extinction (1/km)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
             elif product in 'co':
-                te = fig.text(-0.03, 0.6, 'CO concentration ($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
+                te = fig.text(-0.03, 0.6, r'CO concentration ($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
             elif product in 'co2':
-                te = fig.text(-0.03, 0.6, 'CO$_2$ concentration ($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
+                te = fig.text(-0.03, 0.6, r'CO$_2$ concentration ($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
             else:
                 if 'totmass' in product:
-                    te = fig.text(-0.03, 0.6, ' TOTAL PM ($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
+                    te = fig.text(-0.03, 0.6, r' TOTAL PM ($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
                 elif 'mass' in product:
                     te = fig.text(-0.03, 0.6, product[:-4].upper() + r' PM2.5 ($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, fontweight='bold')
                 else:
@@ -523,10 +525,10 @@ def plot(ipath, station, lat, lon, fcst, opath):
                 te = fig.text(-0.04, 0.3, 'Dust', va='center', rotation='vertical', fontsize=11, color='r')
                 te = fig.text(-0.02, 0.3, 'OC + BC', va='center', rotation='vertical', fontsize=11, color='k')
                 te = fig.text(0., 0.3, 'Sulfate', va='center', rotation='vertical', fontsize=11, color='y')
-                te = fig.text(0.02, 0.3, '($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, color='k')
+                te = fig.text(0.02, 0.3, r'($\mu$g/m$^3$)', va='center', rotation='vertical', fontsize=11, color='k')
             elif product in ['co', 'co2']:
                 te = fig.text(-0.02, 0.3, 'Total Column', va='center', rotation='vertical', fontsize=11, color='g')
-                te = fig.text(0., 0.3, '(mg/m$^3$)', va='center', rotation='vertical', fontsize=11)
+                te = fig.text(0., 0.3, r'(mg/m$^3$)', va='center', rotation='vertical', fontsize=11)
                 if product not in ['co2']:
                     te = fig.text(1., 0.3, '(ppbv)', va='center', rotation=-90, fontsize=11)
                     te = fig.text(1.02, 0.3, 'Surface CO', va='center', rotation=-90, fontsize=11)
