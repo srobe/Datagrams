@@ -348,7 +348,7 @@ def plot(ipath, station, lat, lon, fcst, opath):
     for product in ['o3', 'so2', 'co', 'no2', 'pm25']: # iterate per product
         # start plot template
         fig = plt.figure()
-        ax = plt.gca()
+        #ax = plt.gca()
         ax1 = plt.subplot2grid((28, 1), (1, 0))
         #ax2 = plt.subplot2grid((28, 1), (2, 0), sharex=ax1)
         #ax3 = plt.subplot2grid((28, 1), (3, 0), sharex=ax1)
@@ -462,7 +462,7 @@ def plot(ipath, station, lat, lon, fcst, opath):
             'no2':'NO$_2$ (PPBV)',
             'co':'CO (PPBV)',
 #            'hcho':'HCHO',
-            'pm25':'PM2.5 ($\mu$g/m$^3$)',
+            'pm25':r'PM2.5 ($\mu$g/m$^3$)',
         }
 
         cbar.ax.set_yticklabels(cbar.ax.get_yticklabels(),ha='right')
@@ -478,6 +478,8 @@ def plot(ipath, station, lat, lon, fcst, opath):
                 te.set_bbox(dict(color='w', alpha=0.8, pad=0.1))
         except:
             pass
+        ticks = ax4.get_yticks()          # returns current y-tick locations
+        ax4.set_yticks(ticks[:-1])        # example: keep every other tick
         ax4.set_yticklabels(ylabels[::2][:-1])
         ax4.yaxis.set_tick_params(direction='out')
         ax4.yaxis.tick_left()
@@ -566,7 +568,7 @@ def plot(ipath, station, lat, lon, fcst, opath):
 
             ax6 = ax5.twinx()
             ax6.yaxis.set_ticks([])
-            ax6.set_ylabel('$\mu$g/m$^3$', color='k', rotation='-90', fontsize=11, labelpad=22)
+            ax6.set_ylabel(r'$\mu$g/m$^3$', color='k', rotation=-90, fontsize=11, labelpad=22)
 
         precip_t = [fcst+dt.timedelta(seconds=int(item)) for item in precip['time']]
         ax7.set_xlim([precip_t[0], precip_t[-1]])
@@ -586,7 +588,7 @@ def plot(ipath, station, lat, lon, fcst, opath):
         ax8.locator_params(axis='y', nbins=4)
         ax8.yaxis.set_tick_params(direction='in')
         ax7.set_ylabel('Tot Precip\n(mm)', color='b', fontsize=11)
-        ax8.set_ylabel('Temp 2m ($^\circ$F)', color='r', rotation='-90', fontsize=11, labelpad=15)
+        ax8.set_ylabel(r'Temp 2m ($^\circ$F)', color='r', rotation=-90, fontsize=11, labelpad=15)
         for t1 in ax8.get_yticklabels():
             t1.set_color('r')
         for t1 in ax7.get_yticklabels():
@@ -604,7 +606,7 @@ def plot(ipath, station, lat, lon, fcst, opath):
         ax9.yaxis.get_major_formatter().set_useOffset(False)
         ax9.locator_params(axis='y', nbins=4)
         ax9.yaxis.set_tick_params(direction='in')
-        ax9.set_ylabel('Wind 10m (m/s)', color='k', fontsize=11, rotation='-90', labelpad=15)
+        ax9.set_ylabel('Wind 10m (m/s)', color='k', fontsize=11, rotation=-90, labelpad=15)
         ax9.xaxis.set_ticks([item for item in cld_t if item.hour == 0 or item.hour == 12])
         ax9.xaxis.set_major_formatter(mpl.ticker.FuncFormatter(custom_date_formatter))
 
@@ -632,7 +634,7 @@ def plot(ipath, station, lat, lon, fcst, opath):
         #if 'mass' in product:
         gmao_logo = '/discover/nobackup/dao_ops/ebsmith2/gram/GMAO-logo_small.png'
         nasa_logo = '/discover/nobackup/dao_ops/ebsmith2/gram/nasa-logo_small.png'
-        os.system('composite -gravity northeast -geometry +35+30 ' + gmao_logo + ' ' + os.path.join(opath, img) + ' ' + os.path.join(opath, img))
+        os.system('composite -quiet -gravity northeast -geometry +35+30 ' + gmao_logo + ' ' + os.path.join(opath, img) + ' ' + os.path.join(opath, img))
         os.system('composite -gravity northwest -geometry +40+15 ' + nasa_logo + ' ' + os.path.join(opath, img) + ' ' + os.path.join(opath, img))
 
     del cldtt
